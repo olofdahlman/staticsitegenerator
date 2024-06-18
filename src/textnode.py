@@ -37,15 +37,3 @@ def text_node_to_html_node(text_node):
     if text_node.text_type == text_type_image:
         return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
     raise ValueError(f"Invalid text type: {text_node.text_type}")
-
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
-    new_nodes_list = []
-    for node in old_nodes:
-        if not type(node) == type(TextNode):
-            new_nodes_list.extend(old_nodes)
-    for node in old_nodes:
-        if not delimiter in node:
-            raise Exception(f"No delimiter found in {node}, invalid markdown syntax")   #This might need work, {node} might simply post a physical machine adress, not very helpful
-    
-    split_node = old_nodes.split(delimiter)
-    #stuff
