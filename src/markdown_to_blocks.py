@@ -1,5 +1,5 @@
 #Code to handle the blocks of the markdown text supplied - the inline_markdown handles the contents of each block
-
+import re
 
 def markdown_to_blocks(markdowntext):
     string_list = markdowntext.split("\n")
@@ -16,4 +16,61 @@ def markdown_to_blocks(markdowntext):
     return clean_list
 
 def block_to_block_type(markdowntext):
-    pass #Add stuff here to identify block types
+    #Returns the type of block of a markdown block - it is not supposed to consider inline type text
+    #These patterns capture any instance of the corresponding formatting characters - it relies on there only being one in each block!
+    #If there are more than one pattern match per block, the block splitting function is failing or this code needs to be updated to handle multiple types somehow
+    #But the intended function of this is only to return a type, which should not be multiple things
+    heading_pattern = (r"^(\#{1,6}\s{1})")   #This regex expression finds 1-6 hashtags followed by one whitespace - whitespace can be newlines and other things, so be wary of this
+    code_pattern = (r"^(\`{3})(.*?)(\`{3})$")
+    qoute_pattern = (r"^(\>)")
+    unordered_list_pattern = (r"^([*-]\s{1}\S)") #This code matches either a * or a - character followed by a whitespace (can be newline and others!) followed by a non-whitespace character
+    ordered_list_pattern = (r"^(\d\.\s{1}\S)")
+    ordered_list_pattern_number = (r"^(\d)")  
+
+    if not type(markdowntext) == str:
+        raise Exception("Error: block_to_block_type only accepts string inputs")
+    
+    split_string = markdowntext.split("\n")  
+
+    if not (re.findall( heading_pattern, markdowntext)) == []:
+        return "Heading"
+    if not (re.findall(code_pattern, markdowntext)) == []:
+        return "Code"
+
+    regex_result_list = []  
+    for string in split_string:    
+        if not (re.findall(qoute_pattern, string)) == []:
+            regex_result_list.append(True)
+        else:
+            regex_result_list.append(False)
+    if not False in regex_result_list:
+        return "Qoute"
+    
+    regex_result_list = []  #Function needs to be able to handle multiline lists, I didn't know how to do that with regex alone
+    for string in split_string:    #By using a list and storing evaluated true/false statements, I can have have the code check so that each line matches the unordered list format
+        if not (re.findall(unordered_list_pattern, string)) == []:
+            regex_result_list.append(True)
+        else:
+            regex_result_list.append(False)
+    if not False in regex_result_list:
+        return "Unordered list"
+    
+    regex_result_list = []
+    list_number = 1
+    for string in split_string:
+        match = re.match(ordered_list_pattern, string)
+        match_number = re.match(ordered_list_pattern_number, string)
+        if match:
+            line_number = int(match_number.group())  # Capture the number part
+            if line_number == list_number:
+                 regex_result_list.append(True)
+                 list_number += 1
+            else:
+                regex_result_list.append(False)
+        else:
+            regex_result_list.append(False)
+    if not False in regex_result_list:
+        return "Ordered list"
+    
+    else:
+        return ("Text")
