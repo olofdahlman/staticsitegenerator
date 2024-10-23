@@ -73,4 +73,4 @@ def block_to_block_type(markdowntext):
         return "Ordered list"
     
     else:
-        return ("Text")
+        return ("Paragraph")

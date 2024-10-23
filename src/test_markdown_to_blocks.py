@@ -155,7 +155,7 @@ class Testblock_to_block_type(unittest.TestCase):
             block1 = "This is just some text"
             block2 = "This is some text with * other block type >denominators"
             block3 = "1.Another text block, where ```it should also``` register as text ### due to improper syntax formatting"
-            outcome1 = "Text"
+            outcome1 = "Paragraph"
             self.assertEqual(block_to_block_type(block1), outcome1)
             self.assertEqual(block_to_block_type(block2), outcome1)
             self.assertEqual(block_to_block_type(block3), outcome1)

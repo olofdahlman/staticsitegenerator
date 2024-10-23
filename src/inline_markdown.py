@@ -12,17 +12,17 @@ from extract_links_fromtext import extract_markdown_images, extract_markdown_lin
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for old_node in old_nodes:
-        if old_node.text_type != text_type_text:
+        if old_node.text_type != text_type_text: #If the textnode content is not a plain string, we simply return it and move on
             new_nodes.append(old_node)
             continue
         split_nodes = []
         sections = old_node.text.split(delimiter)
-        if len(sections) % 2 == 0:
-            raise ValueError("Invalid markdown, formatted section not closed")
+        if len(sections) % 2 == 0: #If the rest product of division by the number of strings generated from the split action is 0, that means there's an uneven number of split points
+            raise ValueError("Invalid markdown, formatted section not closed") #Text like **bold** or *italic* will always generate uneven numbers split this way, this checks for it
         for i in range(len(sections)):
-            if sections[i] == "":
+            if sections[i] == "": #This ensures we do not save empty sections
                 continue
-            if i % 2 == 0:
+            if i % 2 == 0: #If the previous error check goes through, italic/bolded/code sections will always be on an uneven list entry
                 split_nodes.append(TextNode(sections[i], text_type_text))
             else:
                 split_nodes.append(TextNode(sections[i], text_type))

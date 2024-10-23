@@ -16,7 +16,7 @@ from inline_markdown import (
 )
 regex_error_pattern = (r"(\*{3,})")
 delimiter_dict = {"**":text_type_bold, "*":text_type_italic, "`":text_type_code}
-#Delimiter list with
+#Delimiter dict with bold, italic and code formatting characters
 
 def text_to_textnode(rawtext):
     if not (re.findall(regex_error_pattern, rawtext)) == []: #Basic check to ensure there isn't more than two * in a row, because this would cause errors with the text extraction functions
