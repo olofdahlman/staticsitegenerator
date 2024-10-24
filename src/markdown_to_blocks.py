@@ -2,15 +2,16 @@
 import re
 
 def markdown_to_blocks(markdowntext):
-    string_list = markdowntext.split("\n")
+    string_list = markdowntext.split("\n\n")
     clean_list = []
     for string in string_list:
-        string_stripped = string.strip()
-        if not string_stripped:
+        if not string:
             continue
+        string_stripped = string.strip()
         clean_list.append(string_stripped)
 
-    #This code splits the lists at each newline, and it is assumed that only proper markdown blocks with one newline between each is in the markdowntext
+    #This code splits the lists at each double newline - this is important, each string will have a newline at the end, then it MUST also have a second newline to denote an empty line
+    #If it's just one newline, it's assumed to be the same block of strings still, and more than 2 is not accepted in our syntax - this code cannot handle that
     #It also does not append empty entries
 
     return clean_list
@@ -48,10 +49,7 @@ def block_to_block_type(markdowntext):
     
     regex_result_list = []  #Function needs to be able to handle multiline lists, I didn't know how to do that with regex alone
     for string in split_string:    #By using a list and storing evaluated true/false statements, I can have have the code check so that each line matches the unordered list format
-        if not (re.findall(unordered_list_pattern, string)) == []:
-            regex_result_list.append(True)
-        else:
-            regex_result_list.append(False)
+        regex_result_list.append(not (re.findall(unordered_list_pattern, string)) == []) #This statement appends the direct outcome of the check, True or False, simplifying
     if not False in regex_result_list:
         return "Unordered list"
     

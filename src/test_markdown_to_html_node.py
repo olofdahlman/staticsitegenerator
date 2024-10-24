@@ -14,24 +14,75 @@ from markdown_to_html_node import (
     block_type_ulist,
     block_type_quote,
 )
-
+class TestMarkdown_to_html_node(unittest.TestCase):
 #These tests have specific markdown text features to ensure specific functions are working as intended
-def test_paragraphs(self):
-        md = """
-This is **bolded** paragraph
-text in a p
-tag here
-
-This is another paragraph with *italic* text and `code` here
-
-"""
-
-        node = markdown_to_html_node(md)
-        html = node.to_html()
-        self.assertEqual(
-            html,
-            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        def test_single_line(self):
+                md = """
+        This is a very simple single paragraph
+        """
+                node = markdown_to_html_node(md)
+                html = node.to_html()
+                self.assertEqual(
+                html,
+                "<div><p>This is a very simple single paragraph</p></div>"
         )
+
+#        def test_two_lines(self):
+#               md = """
+#               This is a slightly more complex task
+#               with two lines of text
+#               """
+
+#               node = markdown_to_html_node(md)
+#               html = node.to_html()
+#               self.assertEqual(
+#                      html,
+#                      "<div><p>This is a slightly more complex task with two lines of text</p></div>"
+#               )
+
+#        def test_two_paragraphs(self):
+#               md = """
+#                This is a test with
+#                two lines
+                
+#                And then a further two
+#                in a second paragraph
+#                """
+#               node = markdown_to_html_node(md)
+#               html = node.to_html()
+#               self.assertEqual(
+#                      html,
+#                      "<div><p>This is a test with two lines</p><p>And then a further two in a second paragraph</p></div>"
+#               )
+
+#        def test_single_line_bold_insert(self):
+#               md = """
+#                This is a single line with **bold** text in the middle
+#                """
+               
+#               node = markdown_to_html_node(md)
+#               html = node.to_html()
+#               self.assertEqual(
+#                      html,
+#                      "<div><p>This is a single line with <b>bold</b> text in the middle</p></div>"
+#               )
+
+#        def test_paragraphs(self):
+#                md = """
+#        This is **bolded** paragraph
+#        text in a p
+#        tag here
+
+#        This is another paragraph with *italic* text and `code` here
+
+#       """
+
+#                node = markdown_to_html_node(md)
+#                html = node.to_html()
+#                self.assertEqual(
+#                html,
+#                "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+#        )
 
 #test_paragraphs_simple is a heavily commented test so I can track what the function call tree looks like
 #Everything is done when 'node' is created by calling markdown_to_html_node first with 'md', the markdown text - the following html = node.to_html is not called immediately
@@ -57,93 +108,89 @@ This is another paragraph with *italic* text and `code` here
 #The main ParentNode contains a list of children, of which each is a ParentNode in its own regard, though of different types if the text demands it, this is what "p" and "b" represent
 #Each one of these ParentNodes in turn contain children LeafNodes which contain the actual strings held within each ParentNode depending on type
 #These LeafNodes will also contain links/images and other smaller features
-def test_paragraphs_simple(self):
-       md = """
-This is a second paragraph
-it has some **bold* text too,
-the intent is that *I* track exactly which functions are called
+#        def test_simple_paragraphs(self):
+#                md = """
+#        This is a second paragraph
+#        it has some **bold* text too,
+#        the intent is that *I* track exactly which functions are called
 
-"""
+#        """
 
-       node = markdown_to_html_node(md)
-       html = node.to_html
-       self.assertEqual(
-              html,
-              "<div><p>This is a second paragraph it has some <b>bold</b> text too, the intent is that <i>I</i> track exactly which functions are called</p><div>"
-       )
+#                node = markdown_to_html_node(md)
+#                html = node.to_html
+#                self.assertEqual(
+#                html,
+#                "<div><p>This is a second paragraph it has some <b>bold</b> text too, the intent is that <i>I</i> track exactly which functions are called</p><div>"
+#        )
 
-#def test_bolded_paragraph(self):
- #      md = """"
-  #     **This text is entierly bolded**
-       
-   #    """
-    #   node = markdown_to_html_node(md)
-     #  html = node.to_html
-      # self.assertEqual(
-       #       html, 
-        #      "<div>"
-       #)
+#        def test_lists(self):
+#                md = """
+#        - This is a list
+#        - with items
+#        - and *more* items
 
-def test_lists(self):
-        md = """
-- This is a list
-- with items
-- and *more* items
+#        1. This is an `ordered` list
+#        2. with items
+#        3. and more items
 
-1. This is an `ordered` list
-2. with items
-3. and more items
+#        """
 
-"""
+#                node = markdown_to_html_node(md)
+#                html = node.to_html()
+#                self.assertEqual(
+#                html,
+#                "<div><ul><li>This is a list</li><li>with items</li><li>and <i>more</i> items</li></ul><ol><li>This is an <code>ordered</code> list</li><li>with items</li><li>and more items</li></ol></div>",
+#        )
 
-        node = markdown_to_html_node(md)
-        html = node.to_html()
-        self.assertEqual(
-            html,
-            "<div><ul><li>This is a list</li><li>with items</li><li>and <i>more</i> items</li></ul><ol><li>This is an <code>ordered</code> list</li><li>with items</li><li>and more items</li></ol></div>",
-        )
+#        def test_headings(self):
+#                md = """
+#        # this is an h1
 
-def test_headings(self):
-        md = """
-# this is an h1
+#        this is paragraph text
 
-this is paragraph text
+        ## this is an h2
+#        """
 
-## this is an h2
-"""
+#                node = markdown_to_html_node(md)
+#                html = node.to_html()
+#                self.assertEqual(
+#                html,
+#                "<div><h1>this is an h1</h1><p>this is paragraph text</p><h2>this is an h2</h2></div>",
+#                )
 
-        node = markdown_to_html_node(md)
-        html = node.to_html()
-        self.assertEqual(
-            html,
-            "<div><h1>this is an h1</h1><p>this is paragraph text</p><h2>this is an h2</h2></div>",
-        )
+#        def test_blockquote(self):
+#                md = """
+#        > This is a
+#        > blockquote block
 
-def test_blockquote(self):
-        md = """
-> This is a
-> blockquote block
+#        this is paragraph text
 
-this is paragraph text
+#        """
 
-"""
+#                node = markdown_to_html_node(md)
+#                html = node.to_html()
+#                self.assertEqual(
+#                html,
+#                "<div><blockquote>This is a blockquote block</blockquote><p>this is paragraph text</p></div>",
+#                )
 
-        node = markdown_to_html_node(md)
-        html = node.to_html()
-        self.assertEqual(
-            html,
-            "<div><blockquote>This is a blockquote block</blockquote><p>this is paragraph text</p></div>",
-        )
+#        def test_block_block_type_error(self):
+#                incorrect_text_type = 1
+#                with self.assertRaises(Exception) as context:
+#                        block_type = block_to_block_type(incorrect_text_type)
+#                self.assertEqual(
+#                        str(context.exception),
+#                        "Error: block_to_block_type only accepts string inputs"
+#                )
 
-def test_block__block_type_error(self):
-       incorrect_text_type = "integer"
-       with self.assertRaises(ValueError) as context:
-              block_type = block_to_block_type(incorrect_text_type)
-       self.assertEqual(
-              str(context.exception),
-              "Invalid block type"
-       )
-
+#        def test_block_block_type_error2(self):
+#                incorrect_text_type = "Text"  #block_to_block_type should simply process this as a text and return "Paragraph", hence the "Invalid block type" error will not appear
+#                with self.assertRaises(ValueError) as context:
+#                        block_type = block_to_block_type(incorrect_text_type)
+#                self.assertNotEqual(
+#                        str(context.exception),
+#                        "Invalid block type"
+#                )
        
 
 if __name__ == "__main__":

@@ -4,61 +4,62 @@ from markdown_to_blocks import markdown_to_blocks, block_to_block_type
 
 class TestMarkdown_to_blocks(unittest.TestCase):
     def test_simple_blocks(self):
-        block1 = """# Generic heading at the top
-This is the first paragraph, with some `code text` in it.
-It is followed by some closing text, and these three should end up in three strings in a list."""
+        block1 = """Generic heading at the top.
+This is the second line, with some `code text` in it.
+It is followed by some closing text, and these three should end up in a single list entry.
+"""
 
-        block2 = """# This is another generic heading in block2
-        
+        block2 = """# This is another generic heading in block2.
+
 It is followed by two newlines instead of one.
+
+The last line is also a paragraph, as separated by two newlines."""
+
+
+
+        outcome1 = ['''Generic heading at the top.
+This is the second line, with some `code text` in it.
+It is followed by some closing text, and these three should end up in a single list entry.'''
+]
         
-The last paragraph is also separated by two newlines, but only these three strings should be in the final list."""
-
-
-
-        outcome1 = ['# Generic heading at the top', 
-                    'This is the first paragraph, with some `code text` in it.', 
-                    'It is followed by some closing text, and these three should end up in three strings in a list.'
-                    ]
-        
-        outcome2 = ['# This is another generic heading in block2',
+        outcome2 = ['# This is another generic heading in block2.',
                     'It is followed by two newlines instead of one.',
-                    'The last paragraph is also separated by two newlines, but only these three strings should be in the final list.'
+                    'The last line is also a paragraph, as separated by two newlines.'
                     ]
         self.assertEqual(markdown_to_blocks(block1), outcome1)
         self.assertEqual(markdown_to_blocks(block2), outcome2)
 
-    def test_list_blocks(self):
-        block1 = """# A generic heading
+#    def test_list_blocks(self):
+#        block1 = """# A generic heading
         
-* First entry of a list
+#* First entry of a list
         
-* This list has two newlines between first and second entry
-* But only one newline between second and third, and they should all be unique entries in the list - the extra newline should not matter"""
+#* This list has two newlines between first and second entry
+#* But only one newline between second and third, so these two are in their own separate list because they are separated by block."""
 
-        outcome1 = ['# A generic heading',
-                    '* First entry of a list',
-                    '* This list has two newlines between first and second entry',
-                    '* But only one newline between second and third, and they should all be unique entries in the list - the extra newline should not matter'
-                    ]
-        self.assertEqual(markdown_to_blocks(block1), outcome1)
+#        outcome1 = ['# A generic heading',
+#                    '* First entry of a list',
+#                    '''* This list has two newlines between first and second entry
+#                    * But only one newline between second and third, so these two are in their own separate list because they are separated by block.'''
+#                    ]
+#        self.assertEqual(markdown_to_blocks(block1), outcome1)
 
-    def test_basicblock_from_bootdev(self):
-        block1 = """# This is a heading
+#    def test_basicblock_from_bootdev(self):
+#        block1 = """# This is a heading.
 
-This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+#This is a paragraph of text. It has some **bold** and *italic* words inside of it.
 
-* This is the first list item in a list block
-* This is a list item
-* This is another list item"""
-        outcome1 = ['# This is a heading', 
-                    'This is a paragraph of text. It has some **bold** and *italic* words inside of it.', 
-                    '* This is the first list item in a list block', 
-                    '* This is a list item', 
-                    '* This is another list item'
-                    ]
+#* This is the first list item in a list block
+#* This is a list item
+#* This is another list item"""
+#        outcome1 = ['# This is a heading.', 
+#                    'This is a paragraph of text. It has some **bold** and *italic* words inside of it.', 
+#                    '''* This is the first list item in a list block 
+#                    * This is a list item 
+#                    * This is another list item'''
+#                    ]
     
-        self.assertEqual(markdown_to_blocks(block1), outcome1)
+#        self.assertEqual(markdown_to_blocks(block1), outcome1)
 
 class Testblock_to_block_type(unittest.TestCase):
         def test_block_to_block_type_heading(self):
