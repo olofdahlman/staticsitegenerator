@@ -45,13 +45,13 @@ def block_to_block_type(markdowntext):
         else:
             regex_result_list.append(False)
     if not False in regex_result_list:
-        return "Qoute"
+        return "Quote"
     
     regex_result_list = []  #Function needs to be able to handle multiline lists, I didn't know how to do that with regex alone
     for string in split_string:    #By using a list and storing evaluated true/false statements, I can have have the code check so that each line matches the unordered list format
         regex_result_list.append(not (re.findall(unordered_list_pattern, string)) == []) #This statement appends the direct outcome of the check, True or False, simplifying
     if not False in regex_result_list:
-        return "Unordered list"
+        return "Unordered_list"
     
     regex_result_list = []
     list_number = 1
@@ -68,7 +68,7 @@ def block_to_block_type(markdowntext):
         else:
             regex_result_list.append(False)
     if not False in regex_result_list:
-        return "Ordered list"
+        return "Ordered_list"
     
     else:
         return ("Paragraph")

@@ -29,37 +29,38 @@ It is followed by some closing text, and these three should end up in a single l
         self.assertEqual(markdown_to_blocks(block1), outcome1)
         self.assertEqual(markdown_to_blocks(block2), outcome2)
 
-#    def test_list_blocks(self):
-#        block1 = """# A generic heading
-        
-#* First entry of a list
-        
-#* This list has two newlines between first and second entry
-#* But only one newline between second and third, so these two are in their own separate list because they are separated by block."""
+    def test_list_blocks(self):
+        block1 = """# A generic heading
 
-#        outcome1 = ['# A generic heading',
-#                    '* First entry of a list',
-#                    '''* This list has two newlines between first and second entry
-#                    * But only one newline between second and third, so these two are in their own separate list because they are separated by block.'''
-#                    ]
-#        self.assertEqual(markdown_to_blocks(block1), outcome1)
+* First entry of a list
 
-#    def test_basicblock_from_bootdev(self):
-#        block1 = """# This is a heading.
+* This list has two newlines between first and second entry
+* But only one newline between second and third, so these two are in their own separate list because they are separated by block."""
 
-#This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+        outcome1 = ['# A generic heading',
+                    '* First entry of a list',
+                    '''* This list has two newlines between first and second entry
+* But only one newline between second and third, so these two are in their own separate list because they are separated by block.'''
+                    ]
+        self.assertEqual(markdown_to_blocks(block1), outcome1)
 
-#* This is the first list item in a list block
-#* This is a list item
-#* This is another list item"""
-#        outcome1 = ['# This is a heading.', 
-#                    'This is a paragraph of text. It has some **bold** and *italic* words inside of it.', 
-#                    '''* This is the first list item in a list block 
-#                    * This is a list item 
-#                    * This is another list item'''
-#                    ]
+    def test_basicblock_from_bootdev(self):
+        block1 = """# This is a heading.
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item"""
+
+        outcome1 = ['# This is a heading.', 
+                    'This is a paragraph of text. It has some **bold** and *italic* words inside of it.', 
+                    '''* This is the first list item in a list block
+* This is a list item
+* This is another list item'''
+                    ]
     
-#        self.assertEqual(markdown_to_blocks(block1), outcome1)
+        self.assertEqual(markdown_to_blocks(block1), outcome1)
 
 class Testblock_to_block_type(unittest.TestCase):
         def test_block_to_block_type_heading(self):
@@ -88,67 +89,67 @@ class Testblock_to_block_type(unittest.TestCase):
 
         def test_block_to_block_type_qoute(self):
             block1 = ">This is sample text starting with a qoute marker"
-            outcome1 = "Qoute"
+            outcome1 = "Quote"
             self.assertEqual(block_to_block_type(block1), outcome1)
         
         def test_block_to_block_type_qoute_multiple(self):
             block1 = ">This a block of qoutes with multiple lines\n>To ensure that the program does not break\n>While handling it"
-            outcome1 = "Qoute"
+            outcome1 = "Quote"
             self.assertEqual(block_to_block_type(block1), outcome1)
             #Test to ensure it can handle a block of qoutes with newlines in it - it should return qoute type as long as each line starts with the > character and no space
 
         def test_block_to_block_type_qoute_multiple_poor_formatting(self):
             block1 = ">This is sample text with too many>qoutemarks >in it"
-            outcome1 = "Qoute"
+            outcome1 = "Quote"
             self.assertEqual(block_to_block_type(block1), outcome1) 
             #Regex should find only the first qoutemark, and if there are multiple the block isn't correctly constructed by the user - it will only find the first
 
         def test_block_to_block_type_unordered_list(self):
             block1 = "* This is an unordered list"
             block2 = "- This is an unordered list with the other character type"
-            outcome1 = "Unordered list"
+            outcome1 = "Unordered_list"
             self.assertEqual(block_to_block_type(block1), outcome1)
             self.assertEqual(block_to_block_type(block2), outcome1)
 
         def test_block_to_block_type_unordered_list_incorrect(self):
             block1 = "*This is sample text with improper unordered list syntax"
             block2 = "-This is another list with improper unordered list syntax and extra * characters in the text"
-            outcome1 = "Unordered list"
+            outcome1 = "Unordered_list"
             self.assertNotEqual(block_to_block_type(block1), outcome1) 
             self.assertNotEqual(block_to_block_type(block2), outcome1) 
 
         def test_block_to_block_type_unordered_list_multiple_incorrect(self):
            block1 = "*   This is another list with too many spaces at the beginning"
            block2 = "** This is another list with too many hashtags in the beginning"
-           outcome1 = "Unordered list"
+           outcome1 = "Unordered_list"
            self.assertNotEqual(block_to_block_type(block1), outcome1) 
            self.assertNotEqual(block_to_block_type(block2), outcome1)
 
         def test_block_to_block_type_ordered_list_single(self):
             block1 = "1. This is an ordered list entry"
             block2 = "1. This is another ordered list entry"
-            outcome1 = "Ordered list"
+            outcome1 = "Ordered_list"
             self.assertEqual(block_to_block_type(block1), outcome1)
             self.assertEqual(block_to_block_type(block2), outcome1)
 
         def test_block_to_block_type_ordered_list_multiple(self):
             block1 = "1. This is an ordered list entry\n2. With multiple lines\n3. To test that it can process it"
             block2 = "1. This is another ordered list\n2. With many shorter\n3. Lines.\n4. Interesting stuff goes here\n5. More stuff.\n6. Last line of stuff"
-            outcome1 = "Ordered list"
+            outcome1 = "Ordered_list"
             self.assertEqual(block_to_block_type(block1), outcome1)
             self.assertEqual(block_to_block_type(block2), outcome1)
 
         def test_block_to_block_type_ordered_list_single_incorrect(self):
             block1 = "1.This is an incorrect ordered list entry"
             block2 = "1 . This is another incorrect ordered list entry"
-            outcome1 = "Ordered list"
+            outcome1 = "Ordered_list"
             self.assertNotEqual(block_to_block_type(block1), outcome1)
             self.assertNotEqual(block_to_block_type(block2), outcome1)
 
         def test_block_to_block_type_ordered_list_multiple_incorrect(self):
             block1 = "1. This is an ordered list entry\n2.With multiple lines\n3. To test that it can process it"
             block2 = "1 . This is another ordered list\n2. With many shorter\n3. Lines.\n4. Interesting stuff goes here\n5. More stuff.\n6. Last line of stuff"
-            outcome1 = "Ordered list"
+            outcome1 = "Ordered_list"
             self.assertNotEqual(block_to_block_type(block1), outcome1)
             self.assertNotEqual(block_to_block_type(block2), outcome1)
 
@@ -166,6 +167,15 @@ class Testblock_to_block_type(unittest.TestCase):
             with self.assertRaises(Exception) as context:
                 block_type = block_to_block_type(block1)
             self.assertEqual(str(context.exception), "Error: block_to_block_type only accepts string inputs")
+    
+        def test_block_to_block_type_error_int_input(self):
+            incorrect_type = 1
+            with self.assertRaises(Exception) as context:
+                block_type = block_to_block_type(incorrect_type)
+            self.assertEqual(
+                str(context.exception),
+                "Error: block_to_block_type only accepts string inputs"
+                )
 
 
 if __name__ == "__main__":
