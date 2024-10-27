@@ -1,6 +1,6 @@
 #Unittest for the extract links/images functions
 import unittest, re
-from extract_links_fromtext import (extract_markdown_images, extract_markdown_links)
+from extract_things_fromtext import extract_markdown_images, extract_markdown_links, extract_title
 
 #Section of teststrings for the unittests - many are tested at once to ensure specific behaviour
 teststring1 = "Test text with ![Image flavour text](www.someimagehostingsite.com)"
@@ -63,6 +63,49 @@ class TestExtractLink(unittest.TestCase):
         node1 = [('This is a fun link', 'www.funsite.com'), ('This is a boring link', 'www.boringsite.com')]
         self.assertEqual(node1, extract_markdown_links(teststring8))
 
+#Third section checks for '#' but excludes '##' in order to extract h1 titles (main header). Does not check for '###' or larger since finding '##' already prevents this and '# #' also does not match
+class   TextExtractTitle(unittest.TestCase):    
+    def test_extract_title_simple(self):
+        node1 = "# This is a simple h1 (title) header"
+        node2 = "# Another simple h1 title header"
+        outcome1 = "This is a simple h1 (title) header"
+        outcome2 = "Another simple h1 title header"
+        self.assertEqual(extract_title(node1), outcome1)
+        self.assertEqual(extract_title(node2), outcome2)
+
+    def test_extract_title_paragraph(self):
+        node1 = """# This is a short string with this h1 title
+
+It also has a second paragraph
+with some largely pointless text"""
+        node2 = """# This is another h1
+
+With a second shorter paragraph"""
+
+        outcome1 = "This is a short string with this h1 title"
+        outcome2 = "This is another h1"
+        self.assertEqual(extract_title(node1), outcome1)
+        self.assertEqual(extract_title(node2), outcome2)
+    
+    def test_extract_title_improper_placement(self):
+        node1 = """This is another document
+# Where the h1 title is improperly placed on line 2"""
+#Normally this is improper title placement in this context, but the code currently only finds the h1 syntax, nothing else
+        outcome1 = "Where the h1 title is improperly placed on line 2"
+        self.assertEqual(extract_title(node1), outcome1)
+
+    def test_extract_title_multiple_h1(self):
+        node1 = """# This is the first h1 in this text
+# This is the second one, it should not be returned"""   #The function returns the first h1 found - the second is never processed since the function call is terminated before
+        outcome1 = "This is the first h1 in this text"
+        self.assertEqual(extract_title(node1), outcome1)
+
+    def test_extract_title_no_h1_error(self):   #The node1 string is supposed to raise the exception in outcome1 since the function needs atleast one h1 to be found
+        node1 = "This is a short text without any h1 tag"
+        outcome1 = "No h1 title found in markdown string"
+        with self.assertRaises(Exception) as context:
+            block1 = extract_title(node1)
+        self.assertEqual(str(context.exception), outcome1)
 
 
 if __name__ == "__main__":
