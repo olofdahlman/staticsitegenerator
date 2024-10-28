@@ -53,3 +53,16 @@ def generate_page(from_path, template_path, dest_path):
         file.write(final_html_page)
     
     return "Generated index.html content document for webpage"
+
+def generate_pages_recursive(source_path_content, template_path, dest_dir_path):
+    gen_log = []
+    for entry in os.listdir(source_path_content):
+        current_path_content = os.path.join(source_path_content, entry)
+        current_path_dest = os.path.join(dest_dir_path, entry)
+        if os.path.isfile(current_path_content):
+            gen_log.append(generate_page(current_path_content, template_path, dest_dir_path))
+        else:
+            os.makedirs(current_path_dest)
+            generate_pages_recursive(current_path_content, template_path, current_path_dest)
+        
+    return gen_log

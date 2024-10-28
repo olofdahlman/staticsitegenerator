@@ -3,16 +3,16 @@
 #print("hello world")
 
 from textnode import TextNode
-from generated_directories import regenerate_public, generate_page
+from generated_directories import regenerate_public, generate_page, generate_pages_recursive
 
 def main():
     log = regenerate_public()
     print(f"Log of copies generated: {log}")
-    source_path = './content/index.md'
+    source_path = './content'
     template_path = './template.html'
     destination_path = './public'
 
-    html_log = generate_page(source_path, template_path, destination_path)
+    html_log = generate_pages_recursive(source_path, template_path, destination_path)
     print(html_log)
 
 
